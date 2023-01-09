@@ -1,0 +1,9 @@
+.ninja*
+build.ninja
+*.s
+*.elf
+*.mlb
+*.nes
+CMakeCache.txt
+*.cmake
+CMakeFiles
