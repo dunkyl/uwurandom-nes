@@ -66,3 +66,5 @@ Setup C/C++ properties.
     ],
     "version": 4
 }
+
+Disable error squiggles from intellisense. It doesn't know about C23 or about the 6502.
