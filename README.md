@@ -10,7 +10,7 @@ For size contrains the scrunkly markov is omitted and the nonsense markov is tri
 
 ## Build
 
-CMake is set up to build main.c with the clang distrubuted by LLVM-MOS, which has special targets for the NES. It also includes tiles.chr
+CMake is set up to build main.c with the clang distrubuted by LLVM-MOS, which has special targets for the NES. It also includes sprites.chr in the rom for graphics.
 
 The code does use a little of C23! [`[[fallthough]]`](https://en.cppreference.com/w/c/language/attributes/fallthrough), which the version of clang does support.
 
