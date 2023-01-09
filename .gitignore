@@ -1,6 +1,5 @@
 .ninja*
 build.ninja
-*.s
 *.elf
 *.mlb
 *.nes

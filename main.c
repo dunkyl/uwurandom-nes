@@ -5,23 +5,19 @@
 
 #include<neslib.h>
 
-int _6502_copy(char* dst, const char* src, size_t len) {
+int nes_copy(char* dst, const char* src, size_t len) {
     memcpy(dst, src, len);
     return 0;
 }
 
-#define COPY_STR(dst, src, len) _6502_copy(dst, src, len)
+#define COPY_STR(dst, src, len) nes_copy(dst, src, len)
 
-
-#define bool char
-#define true 1
-#define false 0
 #define EFAULT 14
 
-static uint16_t rand_state = 0;
+static uint16_t rand_state = 13;
 
 void get_random_bytes(void* buf, size_t len) {
-    for (size_t i = 0; i < len; i++) {
+    for (size_t i = 0; i < len; ++i) {
         rand_state = rand_state * 1105245 + 12345;
         ((char*)buf)[i] = (char)(rand_state >> 8);
     }
@@ -90,7 +86,7 @@ typedef struct {
 typedef struct {
     uwu_op ops[MAX_OPS];
     size_t current_op;
-    int prev_op;
+    uint16_t prev_op;
     bool print_space;
     unsigned int* rng_buf;
     size_t rng_idx;
@@ -1334,7 +1330,7 @@ static unsigned int uwu_random_int(uwu_state* state) {
 static void
 generate_new_ops(uwu_state* state) {
     // init to 0 in case get_random_bytes fails
-    unsigned int random = uwu_random_int(state);
+    uint16_t random = uwu_random_int(state);
 
     static uwu_op null_op = {
         .opcode = UWU_NULL
@@ -1342,7 +1338,7 @@ generate_new_ops(uwu_state* state) {
 
     static const int NUM_OPS = 10;
 
-    if (state->prev_op == -1) {
+    if (state->prev_op == UINT16_MAX) {
         random %= NUM_OPS;
     } else {
         // don't repeat previous op
@@ -1381,6 +1377,7 @@ generate_new_ops(uwu_state* state) {
             // ops[2] = op3;
             // ops[3] = null_op;
             // break;
+            [[fallthrough]];
         }
         case 2: { // nyaaaaaaa
             random = uwu_random_int(state);
@@ -1464,6 +1461,7 @@ generate_new_ops(uwu_state* state) {
             // ops[1] = op2;
             // ops[2] = null_op;
             // break;
+            [[fallthrough]];
         }
         case 9: { // owo
             uwu_op op = CREATE_PRINT_STRING("owo");
@@ -1504,8 +1502,7 @@ static int exec_op(uwu_state* state, char* buf, size_t len) {
 
             size_t num_chars_to_copy = remaining > len ? len : remaining;
 
-            int i;
-            for (i = 0; i < num_chars_to_copy; i++) {
+            for (size_t i = 0; i < num_chars_to_copy; ++i) {
                 uwu_markov_ngram ngram = ngrams[ngram_index];
                 unsigned int random = uwu_random_int(state);
                 random %= ngram.total_probability;
@@ -1531,8 +1528,7 @@ static int exec_op(uwu_state* state, char* buf, size_t len) {
 
         case UWU_REPEAT_CHARACTER: {
             char* c = &op->state.repeat_character.character;
-            int i;
-            for (i = 0; i < len; i++) {
+            for (size_t i = 0; i < len; ++i) {
                 if (op->state.repeat_character.remaining_chars == 0) {
                     // Out of characters. Return the number of characters thus written.
                     return i;
@@ -1596,19 +1592,17 @@ void vprints(int x, int y, const char* text) {
     }
 }
 
-void vprint_wrap(int x, int y, const char* text, size_t len, size_t max_line_len) {
-    size_t line_len = 0;
-    size_t i;
-    int line = y;
-    size_t remaing = len;
-    while (remaing) {
-        size_t num_chars = remaing > max_line_len ? max_line_len : remaing;
-        vprint(x, line, text, num_chars);
-        text += num_chars;
-        remaing -= num_chars;
-        ++line;
-    }
-}
+// void vprint_wrap(int x, int y, const char* text, size_t len, size_t max_line_len) {
+//     int line = y;
+//     size_t remaing = len;
+//     while (remaing) {
+//         size_t num_chars = remaing > max_line_len ? max_line_len : remaing;
+//         vprint(x, line, text, num_chars);
+//         text += num_chars;
+//         remaing -= num_chars;
+//         ++line;
+//     }
+// }
 
 static char dialog_buf[128] = {0};
 // static char dialog_buf2[28] = {0};
@@ -1632,8 +1626,7 @@ enum GameState{
 int main() {
 
     unsigned int rng_buf[RAND_SIZE] = {0};
-    uwu_state state;
-    state.prev_op = -1;
+    state.prev_op = UINT16_MAX;
     state.current_op = 0;
     state.rng_buf = rng_buf;
     state.rng_idx = RAND_SIZE;
@@ -1702,7 +1695,7 @@ int main() {
     int big_time = 0;
 
     char game_state = GAME_STATE_TEXT_SCROLL;
-    char text_scroll = 0;
+    size_t text_scroll = 0;
     #define UWUN 103
     clear_dialog();
     write_chars(&state, dialog_buf, UWUN);

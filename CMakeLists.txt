@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.21)
 
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_C_STANDARD 23)
+set(CMAKE_C_FLAGS_RELEASE "-Os")
 
 set(LLVM_MOS_PLATFORM nes-nrom)
 find_package(llvm-mos-sdk REQUIRED)
@@ -13,4 +14,11 @@ add_executable(UWURANDOM main.c chr-rom.s)
 target_include_directories(UWURANDOM PRIVATE .)
 target_link_libraries(UWURANDOM neslib)
 set_property(SOURCE chr-rom.s PROPERTY
-  OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Alpha.chr)
+  OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/sprites.chr)
+
+target_compile_options(UWURANDOM PRIVATE
+  -Wall -Wextra -Wshadow -Wpedantic
+  -Wnull-dereference
+  -Wformat=2
+  -Wimplicit-fallthrough
+)
