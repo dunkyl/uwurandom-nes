@@ -3,6 +3,8 @@
 This is a port of [uwurandom](https://github.com/valadaptive/uwurandom) to the NES.
 For size contrains the scrunkly markov is omitted and the nonsense markov is trimmed down.
 
+Prebuilt ROMs are available in [releases](https://github.com/dunkyl/uwurandom-nes/releases).
+
 ## Requirements
 
 - CMake 3.21 or later (download [here](https://cmake.org/download/))
