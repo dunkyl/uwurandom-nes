@@ -1,6 +1,7 @@
 # uwurandom for NES
 
 This is a port of [uwurandom](https://github.com/valadaptive/uwurandom) to the NES.
+For size contrains the scrunkly markov is omitted and the nonsense markov is trimmed down.
 
 ## Requirements
 

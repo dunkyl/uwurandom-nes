@@ -14,7 +14,7 @@ int nes_copy(char* dst, const char* src, size_t len) {
 
 #define EFAULT 14
 
-static uint16_t rand_state = 13;
+static uint16_t rand_state = 0;
 
 void get_random_bytes(void* buf, size_t len) {
     for (size_t i = 0; i < len; ++i) {
@@ -81,7 +81,7 @@ typedef struct {
     void* op_data;
 } uwu_op;
 
-#define MAX_OPS 2
+#define MAX_OPS 8
 
 typedef struct {
     uwu_op ops[MAX_OPS];
@@ -92,74 +92,74 @@ typedef struct {
     size_t rng_idx;
 } uwu_state;
 
-// static struct uwu_markov_choice catnonsense_ngram0_choices[] = {
-//     {.next_ngram = 0, .cumulative_probability = 2, .next_char = 'a'},
-//     {.next_ngram = 1, .cumulative_probability = 3, .next_char = 'm'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram1_choices[] = {
-//     {.next_ngram = 7, .cumulative_probability = 3, .next_char = 'r'},
-//     {.next_ngram = 6, .cumulative_probability = 4, .next_char = 'e'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram2_choices[] = {
-//     {.next_ngram = 8, .cumulative_probability = 1, .next_char = 'y'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram3_choices[] = {
-//     {.next_ngram = 9, .cumulative_probability = 1, .next_char = 'w'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram4_choices[] = {
-//     {.next_ngram = 9, .cumulative_probability = 1, .next_char = 'w'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram5_choices[] = {
-//     {.next_ngram = 21, .cumulative_probability = 6, .next_char = 'm'},
-//     {.next_ngram = 22, .cumulative_probability = 7, .next_char = 'n'},
-//     {.next_ngram = 23, .cumulative_probability = 8, .next_char = 'p'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram6_choices[] = {
-//     {.next_ngram = 4, .cumulative_probability = 3, .next_char = 'o'},
-//     {.next_ngram = 5, .cumulative_probability = 5, .next_char = 'w'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram7_choices[] = {
-//     {.next_ngram = 16, .cumulative_probability = 15, .next_char = 'o'},
-//     {.next_ngram = 12, .cumulative_probability = 24, .next_char = 'a'},
-//     {.next_ngram = 18, .cumulative_probability = 28, .next_char = 'r'},
-//     {.next_ngram = 19, .cumulative_probability = 29, .next_char = 'w'},
-//     {.next_ngram = 13, .cumulative_probability = 30, .next_char = 'e'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram8_choices[] = {
-//     {.next_ngram = 26, .cumulative_probability = 1, .next_char = 'a'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram9_choices[] = {
-//     {.next_ngram = 21, .cumulative_probability = 22, .next_char = 'm'},
-//     {.next_ngram = 24, .cumulative_probability = 32, .next_char = 'r'},
-//     {.next_ngram = 22, .cumulative_probability = 36, .next_char = 'n'},
-//     {.next_ngram = 25, .cumulative_probability = 37, .next_char = 'w'},
-//     {.next_ngram = 23, .cumulative_probability = 38, .next_char = 'p'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram10_choices[] = {
-//     {.next_ngram = 11, .cumulative_probability = 1, .next_char = 'u'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram11_choices[] = {
-//     {.next_ngram = 20, .cumulative_probability = 1, .next_char = 'r'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram12_choices[] = {
-//     {.next_ngram = 3, .cumulative_probability = 1, .next_char = 'o'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram13_choices[] = {
-//     {.next_ngram = 4, .cumulative_probability = 1, .next_char = 'o'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram14_choices[] = {
-//     {.next_ngram = 7, .cumulative_probability = 1, .next_char = 'r'},
-//     {.next_ngram = 6, .cumulative_probability = 2, .next_char = 'e'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram15_choices[] = {
-//     {.next_ngram = 8, .cumulative_probability = 1, .next_char = 'y'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram16_choices[] = {
-//     {.next_ngram = 9, .cumulative_probability = 1, .next_char = 'w'}
-// };
-// static struct uwu_markov_choice catnonsense_ngram17_choices[] = {
-//     {.next_ngram = 10, .cumulative_probability = 1, .next_char = 'p'}
-// };
+static struct uwu_markov_choice catnonsense_ngram0_choices[] = {
+    {.next_ngram = 0, .cumulative_probability = 2, .next_char = 'a'},
+    {.next_ngram = 1, .cumulative_probability = 3, .next_char = 'm'}
+};
+static struct uwu_markov_choice catnonsense_ngram1_choices[] = {
+    {.next_ngram = 7, .cumulative_probability = 3, .next_char = 'r'},
+    {.next_ngram = 6, .cumulative_probability = 4, .next_char = 'e'}
+};
+static struct uwu_markov_choice catnonsense_ngram2_choices[] = {
+    {.next_ngram = 8, .cumulative_probability = 1, .next_char = 'y'}
+};
+static struct uwu_markov_choice catnonsense_ngram3_choices[] = {
+    {.next_ngram = 9, .cumulative_probability = 1, .next_char = 'w'}
+};
+static struct uwu_markov_choice catnonsense_ngram4_choices[] = {
+    {.next_ngram = 9, .cumulative_probability = 1, .next_char = 'w'}
+};
+static struct uwu_markov_choice catnonsense_ngram5_choices[] = {
+    {.next_ngram = 11, .cumulative_probability = 6, .next_char = 'm'},
+    {.next_ngram = 12, .cumulative_probability = 7, .next_char = 'n'},
+    {.next_ngram = 17, .cumulative_probability = 8, .next_char = 'p'}
+};
+static struct uwu_markov_choice catnonsense_ngram6_choices[] = {
+    {.next_ngram = 4, .cumulative_probability = 3, .next_char = 'o'},
+    {.next_ngram = 5, .cumulative_probability = 5, .next_char = 'w'}
+};
+static struct uwu_markov_choice catnonsense_ngram7_choices[] = {
+    {.next_ngram = 16, .cumulative_probability = 15, .next_char = 'o'},
+    {.next_ngram = 12, .cumulative_probability = 24, .next_char = 'a'},
+    {.next_ngram = 17, .cumulative_probability = 28, .next_char = 'r'},
+    {.next_ngram = 15, .cumulative_probability = 29, .next_char = 'w'},
+    {.next_ngram = 13, .cumulative_probability = 30, .next_char = 'e'}
+};
+static struct uwu_markov_choice catnonsense_ngram8_choices[] = {
+    {.next_ngram = 17, .cumulative_probability = 1, .next_char = 'a'}
+};
+static struct uwu_markov_choice catnonsense_ngram9_choices[] = {
+    {.next_ngram = 13, .cumulative_probability = 22, .next_char = 'm'},
+    {.next_ngram = 16, .cumulative_probability = 32, .next_char = 'r'},
+    {.next_ngram = 14, .cumulative_probability = 36, .next_char = 'n'},
+    {.next_ngram = 17, .cumulative_probability = 37, .next_char = 'w'},
+    {.next_ngram = 15, .cumulative_probability = 38, .next_char = 'p'}
+};
+static struct uwu_markov_choice catnonsense_ngram10_choices[] = {
+    {.next_ngram = 11, .cumulative_probability = 1, .next_char = 'u'}
+};
+static struct uwu_markov_choice catnonsense_ngram11_choices[] = {
+    {.next_ngram = 17, .cumulative_probability = 1, .next_char = 'r'}
+};
+static struct uwu_markov_choice catnonsense_ngram12_choices[] = {
+    {.next_ngram = 3, .cumulative_probability = 1, .next_char = 'o'}
+};
+static struct uwu_markov_choice catnonsense_ngram13_choices[] = {
+    {.next_ngram = 4, .cumulative_probability = 1, .next_char = 'o'}
+};
+static struct uwu_markov_choice catnonsense_ngram14_choices[] = {
+    {.next_ngram = 7, .cumulative_probability = 1, .next_char = 'r'},
+    {.next_ngram = 6, .cumulative_probability = 2, .next_char = 'e'}
+};
+static struct uwu_markov_choice catnonsense_ngram15_choices[] = {
+    {.next_ngram = 8, .cumulative_probability = 1, .next_char = 'y'}
+};
+static struct uwu_markov_choice catnonsense_ngram16_choices[] = {
+    {.next_ngram = 9, .cumulative_probability = 1, .next_char = 'w'}
+};
+static struct uwu_markov_choice catnonsense_ngram17_choices[] = {
+    {.next_ngram = 10, .cumulative_probability = 1, .next_char = 'p'}
+};
 // static struct uwu_markov_choice catnonsense_ngram18_choices[] = {
 //     {.next_ngram = 18, .cumulative_probability = 7, .next_char = 'r'},
 //     {.next_ngram = 14, .cumulative_probability = 10, .next_char = 'm'},
@@ -196,35 +196,35 @@ typedef struct {
 //     {.next_ngram = 1, .cumulative_probability = 6, .next_char = 'm'}
 // };
 
-// static uwu_markov_ngram catnonsense_ngrams[] = {
-//     {.choices = catnonsense_ngram0_choices, .total_probability = 3}, // aa
-//     {.choices = catnonsense_ngram1_choices, .total_probability = 4}, // am
-//     {.choices = catnonsense_ngram2_choices, .total_probability = 1}, // an
-//     {.choices = catnonsense_ngram3_choices, .total_probability = 1}, // ao
-//     {.choices = catnonsense_ngram4_choices, .total_probability = 1}, // eo
-//     {.choices = catnonsense_ngram5_choices, .total_probability = 8}, // ew
-//     {.choices = catnonsense_ngram6_choices, .total_probability = 5}, // me
-//     {.choices = catnonsense_ngram7_choices, .total_probability = 30}, // mr
-//     {.choices = catnonsense_ngram8_choices, .total_probability = 1}, // ny
-//     {.choices = catnonsense_ngram9_choices, .total_probability = 38}, // ow
-//     {.choices = catnonsense_ngram10_choices, .total_probability = 1}, // pp
-//     {.choices = catnonsense_ngram11_choices, .total_probability = 1}, // pu
-//     {.choices = catnonsense_ngram12_choices, .total_probability = 1}, // ra
-//     {.choices = catnonsense_ngram13_choices, .total_probability = 1}, // re
-//     {.choices = catnonsense_ngram14_choices, .total_probability = 2}, // rm
-//     {.choices = catnonsense_ngram15_choices, .total_probability = 1}, // rn
-//     {.choices = catnonsense_ngram16_choices, .total_probability = 1}, // ro
-//     {.choices = catnonsense_ngram17_choices, .total_probability = 1}, // rp
-//     {.choices = catnonsense_ngram18_choices, .total_probability = 14}, // rr
-//     {.choices = catnonsense_ngram19_choices, .total_probability = 1}, // rw
-//     {.choices = catnonsense_ngram20_choices, .total_probability = 1}, // ur
-//     {.choices = catnonsense_ngram21_choices, .total_probability = 30}, // wm
-//     {.choices = catnonsense_ngram22_choices, .total_probability = 1}, // wn
-//     {.choices = catnonsense_ngram23_choices, .total_probability = 1}, // wp
-//     {.choices = catnonsense_ngram24_choices, .total_probability = 10}, // wr
-//     {.choices = catnonsense_ngram25_choices, .total_probability = 4}, // ww
-//     {.choices = catnonsense_ngram26_choices, .total_probability = 6} // ya
-// };
+static uwu_markov_ngram catnonsense_ngrams[] = {
+    {.choices = catnonsense_ngram0_choices, .total_probability = 3}, // aa
+    {.choices = catnonsense_ngram1_choices, .total_probability = 4}, // am
+    {.choices = catnonsense_ngram2_choices, .total_probability = 1}, // an
+    {.choices = catnonsense_ngram3_choices, .total_probability = 1}, // ao
+    {.choices = catnonsense_ngram4_choices, .total_probability = 1}, // eo
+    {.choices = catnonsense_ngram5_choices, .total_probability = 8}, // ew
+    {.choices = catnonsense_ngram6_choices, .total_probability = 5}, // me
+    {.choices = catnonsense_ngram7_choices, .total_probability = 30}, // mr
+    {.choices = catnonsense_ngram8_choices, .total_probability = 1}, // ny
+    {.choices = catnonsense_ngram9_choices, .total_probability = 38}, // ow
+    {.choices = catnonsense_ngram10_choices, .total_probability = 1}, // pp
+    {.choices = catnonsense_ngram11_choices, .total_probability = 1}, // pu
+    {.choices = catnonsense_ngram12_choices, .total_probability = 1}, // ra
+    {.choices = catnonsense_ngram13_choices, .total_probability = 1}, // re
+    {.choices = catnonsense_ngram14_choices, .total_probability = 2}, // rm
+    {.choices = catnonsense_ngram15_choices, .total_probability = 1}, // rn
+    {.choices = catnonsense_ngram16_choices, .total_probability = 1}, // ro
+    {.choices = catnonsense_ngram17_choices, .total_probability = 1}, // rp
+    // {.choices = catnonsense_ngram18_choices, .total_probability = 14}, // rr
+    // {.choices = catnonsense_ngram19_choices, .total_probability = 1}, // rw
+    // {.choices = catnonsense_ngram20_choices, .total_probability = 1}, // ur
+    // {.choices = catnonsense_ngram21_choices, .total_probability = 30}, // wm
+    // {.choices = catnonsense_ngram22_choices, .total_probability = 1}, // wn
+    // {.choices = catnonsense_ngram23_choices, .total_probability = 1}, // wp
+    // {.choices = catnonsense_ngram24_choices, .total_probability = 10}, // wr
+    // {.choices = catnonsense_ngram25_choices, .total_probability = 4}, // ww
+    // {.choices = catnonsense_ngram26_choices, .total_probability = 6} // ya
+};
 static struct uwu_markov_choice keysmash_ngram0_choices[] = {
     {.next_ngram = 1, .cumulative_probability = 4, .next_char = 'a'},
     {.next_ngram = 10, .cumulative_probability = 5, .next_char = 'k'},
@@ -1306,12 +1306,12 @@ static string_with_len actions[] = {
     STRING_WITH_LEN("*falls asleep*"),
     STRING_WITH_LEN("*sits on ur keyboard*"),
     STRING_WITH_LEN("*nuzzles*"),
-    // STRING_WITH_LEN("*stares at u*"),
-    // STRING_WITH_LEN("*points towards case of monster zero ultra*"),
-    // STRING_WITH_LEN("*sneezes*"),
-    // STRING_WITH_LEN("*plays with yarn*"),
-    // STRING_WITH_LEN("*eats all ur doritos*"),
-    // STRING_WITH_LEN("*lies down on a random surface*")
+    STRING_WITH_LEN("*stares at u*"),
+    STRING_WITH_LEN("*points towards case of monster zero ultra*"),
+    STRING_WITH_LEN("*sneezes*"),
+    STRING_WITH_LEN("*plays with yarn*"),
+    STRING_WITH_LEN("*eats all ur doritos*"),
+    STRING_WITH_LEN("*lies down on a random surface*")
 };
 
 // const size_t RAND_SIZE = 128;
@@ -1359,25 +1359,25 @@ generate_new_ops(uwu_state* state) {
             break;
         }
         case 1: { // catgirl nonsense
-            // random = uwu_random_int(state);
-            // uwu_op op1 = CREATE_PRINT_STRING("mr");
-            // uwu_op op2 = {
-            //     .opcode = UWU_MARKOV,
-            //     .state = {
-            //         .markov = {
-            //             .prev_ngram = 7, // mr
-            //             .remaining_chars = (random % 125) + 25,
-            //             .ngrams = catnonsense_ngrams
-            //         }
-            //     }
-            // };
-            // uwu_op op3 = CREATE_PRINT_STRING("nya");
-            // ops[0] = op1;
-            // ops[1] = op2;
-            // ops[2] = op3;
-            // ops[3] = null_op;
-            // break;
-            [[fallthrough]];
+            random = uwu_random_int(state);
+            uwu_op op1 = CREATE_PRINT_STRING("mr");
+            uwu_op op2 = {
+                .opcode = UWU_MARKOV,
+                .state = {
+                    .markov = {
+                        .prev_ngram = 7, // mr
+                        .remaining_chars = (random % 125) + 25,
+                        .ngrams = catnonsense_ngrams
+                    }
+                }
+            };
+            uwu_op op3 = CREATE_PRINT_STRING("nya");
+            ops[0] = op1;
+            ops[1] = op2;
+            ops[2] = op3;
+            ops[2] = null_op;
+            break;
+            // [[fallthrough]];
         }
         case 2: { // nyaaaaaaa
             random = uwu_random_int(state);
@@ -1604,19 +1604,19 @@ void vprints(int x, int y, const char* text) {
 //     }
 // }
 
-static char dialog_buf[128] = {0};
+static char dialog_buf[103] = {0};
 // static char dialog_buf2[28] = {0};
 
-static uwu_state state;
+// uwu_state state;
 
 void clear_dialog() {
     memset(dialog_buf, 0, sizeof(dialog_buf));
 }
 
-void write_uwu_line(int x, int y, int len) {
-    write_chars(&state, dialog_buf, len);
-    vprint(x, y, dialog_buf, len);
-}
+// void write_uwu_line(int x, int y, int len, uwu_state* state) {
+//     write_chars(state, dialog_buf, len);
+//     vprint(x, y, dialog_buf, len);
+// }
 
 enum GameState{
     GAME_STATE_TEXT_SCROLL,
@@ -1626,13 +1626,14 @@ enum GameState{
 int main() {
 
     unsigned int rng_buf[RAND_SIZE] = {0};
+    uwu_state state;
     state.prev_op = UINT16_MAX;
     state.current_op = 0;
     state.rng_buf = rng_buf;
     state.rng_idx = RAND_SIZE;
     generate_new_ops(&state);
 
-    static const char palette[15] = {0x0c, 0x05, 0x15, 0x35};
+    static const char palette[16] = {0x0c, 0x05, 0x15, 0x35};
 
     // splash
     ppu_off();
@@ -1700,7 +1701,7 @@ int main() {
     clear_dialog();
     write_chars(&state, dialog_buf, UWUN);
 
-    char dialog_len = strlen(dialog_buf);;
+    char dialog_len = UWUN; //strlen(dialog_buf);
 
     #define MAX_FAST_TEXT 24
     char fast_text_bufc[MAX_FAST_TEXT] = {0};

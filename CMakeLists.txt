@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
 set (CMAKE_C_STANDARD 23)
-set(CMAKE_C_FLAGS_RELEASE "-Os")
 
 set(LLVM_MOS_PLATFORM nes-nrom)
 find_package(llvm-mos-sdk REQUIRED)
@@ -21,4 +20,5 @@ target_compile_options(UWURANDOM PRIVATE
   -Wnull-dereference
   -Wformat=2
   -Wimplicit-fallthrough
+  -Oz
 )
