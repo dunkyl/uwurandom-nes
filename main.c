@@ -1645,10 +1645,12 @@ int main() {
     vprints(15, 11, "\x08\x09");
     vprints(15, 12, "\x18\x19");
 
+    vprints(1, 15, "uwurandom \x9F 2022 valadaptive");
+
     ppu_on_all(); 
     oam_clear();
 
-    for (int i = 0; i < 60; ++i) {
+    for (int i = 0; i < 480; ++i) {
         ppu_wait_nmi();
     }
     
